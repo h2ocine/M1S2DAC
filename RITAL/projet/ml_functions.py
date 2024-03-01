@@ -12,15 +12,13 @@ from sklearn import (
     pipeline,
 )
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, auc, roc_curve
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
-from gensim.models import Word2Vec
-from gensim.models.keyedvectors import KeyedVectors
+
 import numpy as np
 
 
@@ -128,7 +126,36 @@ def analyze(data, vectorizer, model):
 # ------------------------------------------------------------------- ------------------------------------------------------------------- -------------------------------------------------------------------
 # ------------------------------------------------------------------- ------------------------------------------------------------------- -------------------------------------------------------------------
 # ------------------------------------------------------------------- ------------------------------------------------------------------- -------------------------------------------------------------------
-    
+
+def logistic_regression(X_train, X_test, y_train, y_test):
+    model = clf = linear_model.LogisticRegression(solver='lbfgs', max_iter=1000)
+    # Entraîner le modèle sur les données d'entraînement
+    model.fit(X_train, y_train)
+
+    # Prédire les étiquettes des données de test
+    y_pred = model.predict(X_test)
+
+    # Prédire les probabilités des classes positives pour les données de test
+    # Prédire les probabilités des classes positives pour les données de test
+    if hasattr(model, "predict_proba"):
+        y_prob = model.predict_proba(X_test)[:, 1]
+    else:
+        # Utiliser la décision de fonction de décision si le modèle ne prend pas en charge predict_proba
+        y_prob = model.decision_function(X_test)
+
+    # Calcul des métriques de performance
+    fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+    auc = metrics.auc(fpr, tpr)
+    f1 = f1_score(y_test, y_pred)
+    acc = accuracy_score(y_test, y_pred)
+
+    # Affichage du rapport de classification
+    report = metrics.classification_report(y_test, y_pred)
+    # print(report)
+
+    print(f'{green_code}Accuracy :\t{acc}{reset_code}')
+    print(f'{green_code}F1 score :\t{f1}{reset_code}')
+    print(f'{green_code}AUC :\t\t{auc}{reset_code}')
 
 def logistic_regression_analyze(data, vectorizer):
     # Initialiser un modèle de régression logistique

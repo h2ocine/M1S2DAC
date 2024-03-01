@@ -5,6 +5,8 @@ import nltk
 import spacy
 import os.path
 
+nlp = spacy.load("en_core_web_sm")
+
 def preprocess(text, lemma = False):
     """
     Transforms text to remove unwanted bits.
@@ -28,7 +30,6 @@ def preprocess(text, lemma = False):
     text = re.sub(r'\s+', ' ', text)
  
     if lemma:
-        nlp = spacy.load("en_core_web_sm")
         lemmatised_text = nlp(text)
         text = [str(word.lemma_) for word in lemmatised_text]
         text = ' '.join(text)
