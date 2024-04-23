@@ -22,6 +22,6 @@ def preprocess(text, lower=True, remove_punc=True, remove_digit=True, stem='engl
         for token in res.split(' '):
                 after_stem += stemmer.stem(token) + ' '
 
-        res = after_stem
+        res = after_stem 
 
     return ' '.join(word_tokenize(res))
