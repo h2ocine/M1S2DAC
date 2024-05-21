@@ -13,9 +13,12 @@ import spacy
 #from wikipedia2vec import Wikipedia2Vec
 from sklearn.metrics.pairwise import cosine_similarity
 
+
+
 # Load pre-trained Wikipedia2Vec model
 #wiki2vec = Wikipedia2Vec.load('enwiki_20180420_500d.txt')
 # Charger le modèle Word2Vec pré-entraîné
+nltk.download('punkt')
 model = api.load("word2vec-google-news-300")
 nlp = spacy.load('en_core_web_sm')
 
@@ -138,7 +141,7 @@ def wikipedia2vec_similarity(wiki2vec, text1, text2):
     vec1 = get_wikipedia2vec_vector(wiki2vec, text1)
     vec2 = get_wikipedia2vec_vector(wiki2vec, text2)
     if vec1 is None or vec2 is None:
-        return 0.0
+        return 0.0,  
     return cosine_similarity([vec1], [vec2])[0][0]
 
 
@@ -202,6 +205,54 @@ def word2vec_similarity(query, document):
     document_vector = np.mean([model[word] for word in document_terms], axis=0)
     
     return cosine_similarity([query_vector], [document_vector])[0][0]
+
+
+import gensim.downloader as api
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+from nltk.tokenize import word_tokenize
+import nltk
+nltk.download('punkt')
+
+# Charger le modèle Word2Vec pré-entraîné
+model = api.load("word2vec-google-news-300")
+
+def get_word_vector(word):
+    try:
+        return model[word]
+    except KeyError:
+        return np.zeros(model.vector_size)
+
+def vectorize_text(text):
+    tokens = word_tokenize(text.lower())
+    vectors = [get_word_vector(token) for token in tokens if token in model]
+    return vectors
+
+def ngrams(sequence, n):
+    return [sequence[i:i + n] for i in range(len(sequence) - n + 1)]
+
+def matched_ngram_similarity(question, answer, k, n):
+    question_vectors = vectorize_text(question)
+    answer_vectors = vectorize_text(answer)
+    
+    if len(question_vectors) < k or len(answer_vectors) < n:
+        return 0.0
+
+    max_similarity = 0.0
+    question_grams = ngrams(question_vectors, k)
+    answer_grams = ngrams(answer_vectors, n)
+    
+    for q_gram in question_grams:
+        q_gram_sum = np.sum(q_gram, axis=0).reshape(1, -1)
+        for a_gram in answer_grams:
+            a_gram_sum = np.sum(a_gram, axis=0).reshape(1, -1)
+            similarity = cosine_similarity(q_gram_sum, a_gram_sum)[0][0]
+            if similarity > max_similarity:
+                max_similarity = similarity
+    
+    return max_similarity
+
+
 
 
 #---------------------------------------------------------------------------------------------------
