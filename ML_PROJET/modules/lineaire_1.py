@@ -66,17 +66,27 @@ class Linear(Module):
         if self.bias:
             self._parameters['b'] = np.zeros(output)
 
+    # def forward(self, X: np.ndarray) -> np.ndarray:
+    #     """
+    #     Effectue une passe avant (calcul des sorties).
+    #     :param X: données d'entrée, forme (batch, input)
+    #     :return: sorties, forme (batch, output)
+    #     """
+    #     self._save_data(X)
+    #     output = X.dot(self._parameters['W'])
+    #     if self.bias:
+    #         output += self._parameters['b']
+    #     return output
+    
     def forward(self, X: np.ndarray) -> np.ndarray:
-        """
-        Effectue une passe avant (calcul des sorties).
-        :param X: données d'entrée, forme (batch, input)
-        :return: sorties, forme (batch, output)
-        """
         self._save_data(X)
+        print(f"Forward pass - shape of input X: {X.shape}")
         output = X.dot(self._parameters['W'])
         if self.bias:
             output += self._parameters['b']
+        print(f"Forward pass - shape of output: {output.shape}")
         return output
+
 
     def backward_update_gradient(self, X: np.ndarray, delta: np.ndarray):
         """
