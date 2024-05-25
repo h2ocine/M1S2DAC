@@ -1,9 +1,3 @@
-# Machine Learning
-# DAC, Sorbonne University
-# Ben Kabongo
-#
-# Utils
-
 import numpy as np
 
 

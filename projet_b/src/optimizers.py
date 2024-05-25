@@ -1,9 +1,3 @@
-# Machine Learning
-# DAC, Sorbonne University
-# Ben Kabongo
-#
-# Optimizers
-
 import numpy as np
 import module
 import loss

@@ -1,9 +1,3 @@
-# Machine Learning
-# DAC, Sorbonne University
-# Ben Kabongo
-#
-# Average Pool 1D
-
 import module
 import numpy as np
 

@@ -1,10 +1,3 @@
-# Machine Learning
-# DAC, Sorbonne University
-# Ben Kabongo
-#
-# AutoEncoder
-
-
 import activation
 import linear
 import module as m

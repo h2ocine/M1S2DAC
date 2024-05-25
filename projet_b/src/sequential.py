@@ -1,9 +1,3 @@
-# Machine Learning
-# DAC, Sorbonne University
-# Ben Kabongo
-#
-# Sequential
-
 import module as m
 import linear
 import numpy as np
