@@ -83,3 +83,123 @@ class Module(object):
             shape (m, d)
         '''
         raise NotImplementedError
+
+
+class Initialization(object):
+    '''
+    module weight initialization mode
+    zero, one, random, uniform, xavier, lecun
+    '''
+    ZERO    = 0
+    ONE     = 1
+    RANDOM  = 2
+    UNIFORM = 3
+    XAVIER  = 4
+    LECUN   = 5
+
+
+class GradientDescentMode(object):
+    '''
+    Gradient Descent mode
+    batch, mini_batch, stochastic
+    '''
+    BATCH      = 0
+    MINI_BATCH = 1
+    STOCHASTIC = 2
+
+
+
+# --------------------------------------------------------------------------- #
+# ------------------------- Fonction d'activations -------------------------- #
+# --------------------------------------------------------------------------- #
+class Activation(module.Module):
+    def __init__(self):
+        super().__init__()
+
+
+    def _backward(self, X: np.ndarray) -> np.ndarray:
+        raise NotImplementedError
+
+
+    def backward_delta(self, X: np.ndarray, delta: np.ndarray) -> np.ndarray:
+        return delta * self._backward(X)
+
+
+class TanH(Activation):
+    def __init__(self):
+        super().__init__()
+
+
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        self._save_data(X)
+        return np.tanh(X)
+
+
+    def _backward(self, X: np.ndarray) -> np.ndarray:
+        return 1 - np.tanh(X) ** 2
+
+
+class Sigmoid(Activation):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        self._save_data(X)
+        return 1 / (1 + np.exp(-X))
+
+    def _backward(self, X: np.ndarray) -> np.ndarray:
+        return np.exp(-X) / ((1 + np.exp(-X)) ** 2)
+
+
+class ReLU(Activation):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        self._save_data(X)
+        return np.maximum(X, 0)
+
+    def _backward(self, X: np.ndarray) -> np.ndarray:
+        return np.where(X > 0, 1, 0)
+
+
+class LeakyReLU(Activation):
+    def __init__(self, alpha=0.01):
+        super().__init__()
+        self.alpha = alpha
+
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        self._save_data(X)
+        return np.maximum(X, self.alpha*X)
+
+    def _backward(self, X: np.ndarray) -> np.ndarray:
+        return np.where(X > 0, 1, self.alpha)
+
+
+class ELU(Activation):
+    def __init__(self, alpha=1.0):
+        super().__init__()
+        self.alpha = alpha
+
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        self._save_data(X)
+        return np.where(X > 0, X, self.alpha * (np.exp(X) - 1))
+
+    def _backward(self, X: np.ndarray) -> np.ndarray:
+        return np.where(X > 0, 1, self.alpha * np.exp(X))
+
+
+class Softmax(Activation):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        self._save_data(X)
+        return softmax(X)
+
+    def _backward(self, X: np.ndarray) -> np.ndarray:
+        s = self.forward(X)
+        return s * (1 - s)
+        
+
+

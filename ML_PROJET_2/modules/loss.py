@@ -106,7 +106,7 @@ class CELoss(Loss):
             shape = (m,)
         '''
         self._assert_shape(y, yhat)
-        return -np.log(utils.softmax(yhat)[np.arange(len(y)), y.argmax(axis=1).reshape(-1)])
+        return -np.log(softmax(yhat)[np.arange(len(y)), y.argmax(axis=1).reshape(-1)])
 
     def backward(self, y: np.ndarray, yhat: np.ndarray) -> np.ndarray:
         '''
@@ -118,7 +118,7 @@ class CELoss(Loss):
         :return CE grad
             shape = (m, k)
         '''
-        return -y + utils.softmax(yhat)
+        return -y + softmax(yhat)
 
 
 class CCELoss(Loss):
