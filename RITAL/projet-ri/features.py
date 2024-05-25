@@ -5,6 +5,7 @@ import numpy as np
 import math
 from collections import Counter
 import gensim.downloader as api
+import nltk
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet as wn
